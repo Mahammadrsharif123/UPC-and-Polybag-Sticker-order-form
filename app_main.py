@@ -77,7 +77,7 @@ if uploaded_file:
 
     # --- Size order ---
     size_order = (
-        [str(i) for i in range(28, 55)] +
+        [str(i) for i in range(2, 55)] +
         ["XXS","XS","S","M","L","XL","XXL",
          "1X","2X","3X","4X","5X","6X",
          "LT","XLT","2XT","3XT","4XT","5XT","6XT"]
@@ -104,13 +104,19 @@ if uploaded_file:
 
         po = row.get("PO #", "")
         color = str(row.get("Color", "")).zfill(3)   # ✅ Force 3-digit color code
-        size = str(row.get("Size", ""))
-        f_dim = str(row.get("f_DM", ""))
+        size = str(row.get("F_Size", ""))            # ✅ Size now from F_Size
+        f_dm = str(row.get("f_DM", ""))              # ✅ Inseam always from f_DM
         vendor = row.get("AB Number", "")
         season = row.get("Season", "")
         qty = row.get("Quantity", 0)
         coo = row.get("Country of Origin", "")
         country_full = str(row.get("Country", ""))
+
+        # ✅ COO normalization
+        if "india" in coo.lower():
+            coo = "India"
+        elif "bangladesh" in coo.lower():
+            coo = "Bangladesh"
 
         # Destination mapping
         if country_full.upper() == "UNITED STATES":
@@ -141,7 +147,7 @@ if uploaded_file:
                 "Country of Origin": coo,
                 "GENDER": gender_choice,
                 "Size": size,
-                "Inseam": f_dim,
+                "Inseam": f_dm,
                 "Price": price
             })
             output_rows_normal.append({
@@ -158,8 +164,8 @@ if uploaded_file:
                 "Country of Origin": coo,
                 "GENDER": gender_choice,
                 "Size": size,
-                "Inseam": f_dim,
-                "Price": price
+                "Inseam": f_dm,
+                "Price": "NO"
             })
 
         # --- Japan (separate file) ---
@@ -179,7 +185,7 @@ if uploaded_file:
                 "Country of Origin": coo,
                 "GENDER": gender_choice,
                 "Size": size,
-                "Inseam": f_dim,
+                "Inseam": f_dm,
                 "Price": "YES"
             })
             # ✅ Polybag stays NO
@@ -197,7 +203,7 @@ if uploaded_file:
                 "Country of Origin": coo,
                 "GENDER": gender_choice,
                 "Size": size,
-                "Inseam": f_dim,
+                "Inseam": f_dm,
                 "Price": "NO"
             })
 
